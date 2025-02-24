@@ -1,7 +1,22 @@
-const { app, BrowserWindow, session, Tray, Menu } = require('electron');
+const { app, BrowserWindow, session, Tray, Menu, systemPreferences } = require('electron');
 const Store = require('electron-store');
 const path = require('path');
 const store = new Store();
+
+// Enable hardware acceleration and media features
+app.commandLine.appendSwitch('enable-accelerated-mjpeg-decode');
+app.commandLine.appendSwitch('enable-accelerated-video');
+app.commandLine.appendSwitch('enable-gpu-rasterization');
+app.commandLine.appendSwitch('enable-native-gpu-memory-buffers');
+app.commandLine.appendSwitch('enable-zero-copy');
+
+// Enable WebRTC and Media features
+app.commandLine.appendSwitch('enable-features', 'WebRTCPipeWireCapturer,MediaStreamAPI,AutoplayPolicy');
+app.commandLine.appendSwitch('autoplay-policy', 'no-user-gesture-required');
+app.commandLine.appendSwitch('enable-speech-api');
+app.commandLine.appendSwitch('enable-media-stream');
+app.commandLine.appendSwitch('use-fake-ui-for-media-stream');
+app.commandLine.appendSwitch('enable-usermedia-screen-capturing');
 
 // Keep global references
 let mainWindow;
@@ -41,15 +56,15 @@ if (!gotTheLock) {
     // Create a persistent session partition
     const ses = session.fromPartition('persist:deepseek', { cache: true });
 
-    // Configure session for proper cookie handling
+    // Configure session to allow ALL permissions
     ses.setPermissionRequestHandler((webContents, permission, callback) => {
-      const url = webContents.getURL();
-      if (url.startsWith('https://chat.deepseek.com') || 
-          url.startsWith('https://accounts.google.com')) {
-        callback(true);
-      } else {
-        callback(false);
-      }
+      console.log('Permission auto-approved:', permission);
+      callback(true); // Allow ALL permissions
+    });
+
+    // Additional permission checks - always return true
+    ses.setPermissionCheckHandler((webContents, permission) => {
+      return true; // Allow ALL permission checks
     });
 
     // Create the browser window with updated settings
@@ -57,6 +72,7 @@ if (!gotTheLock) {
       width: 1200,
       height: 800,
       icon: path.join(__dirname, 'DEEP_SEEK.png'),
+      autoHideMenuBar: true, // Hide the top menu bar
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: true,
@@ -64,14 +80,54 @@ if (!gotTheLock) {
         partition: 'persist:deepseek',
         webSecurity: true,
         allowRunningInsecureContent: false,
+        experimentalFeatures: true,
+        webgl: true,
+        plugins: true,
+        clipboard: true,
+        spellcheck: true,
+        enableWebSQL: true,
+        enableBlinkFeatures: 'Clipboard,MediaStream,AudioCapture,VideoCapture',
+        additionalArguments: [
+          '--enable-features=Clipboard,ClipboardBasic,ClipboardRead,ClipboardWrite',
+          '--use-fake-ui-for-media-stream',
+          '--enable-media-stream',
+          '--enable-usermedia-screen-capturing'
+        ],
       }
     });
+
+    // Set media access preferences for macOS
+    if (process.platform === 'darwin') {
+      systemPreferences.setUserDefault('kTCCServiceMicrophone', 'boolean', true);
+      systemPreferences.setUserDefault('kTCCServiceCamera', 'boolean', true);
+    }
 
     // Configure session for proper headers
     ses.webRequest.onBeforeSendHeaders((details, callback) => {
       let { requestHeaders } = details;
       requestHeaders['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
       callback({ requestHeaders });
+    });
+
+    // Set up CSP with media permissions
+    ses.webRequest.onHeadersReceived((details, callback) => {
+      callback({
+        responseHeaders: {
+          ...details.responseHeaders,
+          'Content-Security-Policy': [
+            "default-src 'self' https: app: 'unsafe-inline' 'unsafe-eval' data: blob: clipboard: mediastream: mediadevices:; " +
+            "media-src 'self' https: blob: mediastream: mediadevices: *; " +
+            "connect-src 'self' https: wss: blob: mediastream: mediadevices: clipboard:; " +
+            "script-src 'self' https: app: 'unsafe-inline' 'unsafe-eval' blob: clipboard:; " +
+            "worker-src 'self' blob: https:; " +
+            "frame-src 'self' https:; " +
+            "style-src 'self' 'unsafe-inline' https:; " +
+            "img-src 'self' data: https: blob:; " +
+            "clipboard-write 'self' https:; " +
+            "clipboard-read 'self' https:;"
+          ]
+        }
+      });
     });
 
     // Handle new window creation properly
