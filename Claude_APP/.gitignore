@@ -1,0 +1,13 @@
+# Build output
+build/
+build-*/
+
+# Reference implementation
+reference/
+
+# Node modules
+node_modules/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
