@@ -10,7 +10,7 @@ This repository contains Electron-based desktop applications for various AI chat
 ```
 electron_app/
 ├── ChatGPT_APP/       # Electron wrapper for ChatGPT
-├── Grok_APP/       # Electron wrapper for Grok
+├── Grok_APP/          # Electron wrapper for Grok
 ├── Claude_APP/        # Electron wrapper for Claude AI
 └── DeepSeek_APP/      # Electron wrapper for DeepSeek Chat
 ```
