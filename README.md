@@ -69,7 +69,7 @@ An unofficial Electron wrapper for Claude AI desktop application.
 
 An Electron wrapper for DeepSeek Chat.
 
-![image](https://github.com/user-attachments/assets/86d6f2a9-7485-4a7c-a11e-225fc5ff8c70)
+![image](https://github.com/user-attachments/assets/80c92bbb-d6dd-4171-a383-7447242edb1c)
 
 **Key Files:**
 - `main.js` - Main Electron process
