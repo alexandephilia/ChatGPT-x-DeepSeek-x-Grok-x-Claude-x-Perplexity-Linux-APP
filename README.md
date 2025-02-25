@@ -1,5 +1,5 @@
 # AI Chat Desktop Applications
-![image](https://github.com/user-attachments/assets/4e5e450c-765f-4471-b220-61f7e6eab665)
+![image](https://github.com/user-attachments/assets/29bc20ee-56bd-46f5-b5a3-43603723a7a7)
 
 This repository contains Electron-based desktop applications for various AI chat platforms. Each application is designed to provide a native desktop experience for web-based AI chat services.
 
@@ -81,6 +81,27 @@ An Electron wrapper for DeepSeek Chat.
 - Permission handling for web content
 - Cross-platform build configuration
 
+
+### Grok_APP
+
+![image](https://github.com/user-attachments/assets/f6f8b27a-085c-49b0-8671-2e6bec62ff71)
+
+An Electron-based desktop application for Grok.
+
+**Key Files:**
+- `main.js` - Main Electron process that creates windows and handles system integration
+- `renderer.js` - Renderer process script that interacts with the Grok web interface
+- `preload.js` - Preload script that bridges the main and renderer processes
+- `package.json` - Project configuration and dependencies
+- `chatgpt.png` - Application icon
+- `dist/` - Build output directory
+
+**Features:**
+- System tray integration
+- Hardware acceleration for better performance
+- Media access for voice input
+- Single instance lock to prevent multiple instances
+
 ## Building and Running
 
 Each application can be built and run independently:
@@ -111,9 +132,18 @@ npm start     # Run the application
 npm run build # Build the application
 ```
 
+### Grok_APP
+
+```bash
+cd Grok_APP
+npm install
+npm start     # Run the application
+npm run build # Build the application
+```
+
 ## License
 
-- ChatGPT_APP and DeepSeek_APP: Refer to their respective package.json files
+- ChatGPT_APP, Grok_APP and DeepSeek_APP: Refer to their respective package.json files
 - Claude_APP: Dual-licensed under MIT and Apache License 2.0
 
 ## Notes
