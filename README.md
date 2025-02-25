@@ -1,7 +1,9 @@
 # AI Chat Desktop Applications
 ![image](https://github.com/user-attachments/assets/29bc20ee-56bd-46f5-b5a3-43603723a7a7)
 
-This repository contains Electron-based desktop applications for various AI chat platforms. Each application is designed to provide a native desktop experience for web-based AI chat services.
+This repository contains Electron-based desktop applications for various AI chat platforms. Each application is designed to provide a native desktop experience for web-based AI chat services. 
+
+> Contributors: Alexandephilia x Sonnet 3.5
 
 ## Repository Structure
 
