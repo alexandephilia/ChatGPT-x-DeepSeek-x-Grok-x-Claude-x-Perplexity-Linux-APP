@@ -1,5 +1,6 @@
-const { app, BrowserWindow, Tray, Menu, systemPreferences, session, dialog, desktopCapturer, ipcMain, protocol, net } = require('electron');
+const { app, BrowserWindow, Tray, Menu, systemPreferences, session, dialog, desktopCapturer, ipcMain, protocol, net, shell } = require('electron');
 const path = require('path');
+const crypto = require('crypto');
 
 // Enable hardware acceleration
 app.commandLine.appendSwitch('enable-accelerated-mjpeg-decode');
@@ -29,11 +30,81 @@ if (!gotTheLock) {
     // Keep global references
     let mainWindow;
     let tray;
+    let authState;
 
-    // Request media access early
-    async function requestMediaAccess() {
-      // Skip media access request - we're allowing everything
-      return true;
+    // Register custom protocol
+    if (process.defaultApp) {
+      if (process.argv.length >= 2) {
+        app.setAsDefaultProtocolClient('grok-auth', process.execPath, [path.resolve(process.argv[1])])
+      }
+    } else {
+      app.setAsDefaultProtocolClient('grok-auth');
+    }
+
+    // Handle custom protocol
+    app.on('open-url', (event, url) => {
+      event.preventDefault();
+      handleAuthCallback(url);
+    });
+
+    // Handle auth callback
+    async function handleAuthCallback(url) {
+      try {
+        const urlObj = new URL(url);
+        const params = new URLSearchParams(urlObj.search);
+        const code = params.get('code');
+        const state = params.get('state');
+
+        // Verify state to prevent CSRF
+        if (state !== authState) {
+          console.error('State mismatch in auth callback');
+          return;
+        }
+
+        if (code) {
+          // Exchange code for tokens here
+          console.log('Auth code received:', code);
+          
+          // Show and focus main window
+          if (mainWindow) {
+            mainWindow.show();
+            mainWindow.focus();
+            
+            // Send auth success to renderer
+            mainWindow.webContents.send('auth-success', { code });
+          }
+        }
+      } catch (error) {
+        console.error('Auth callback error:', error);
+      }
+    }
+
+    // Initialize Google OAuth
+    function initializeGoogleAuth() {
+      // Google OAuth 2.0 configuration
+      const clientId = 'YOUR_CLIENT_ID';
+      const redirectUri = 'grok-auth://callback';
+      const scope = 'email profile';
+      
+      return {
+        startAuth: () => {
+          // Generate random state
+          authState = crypto.randomBytes(16).toString('hex');
+          
+          // Construct auth URL
+          const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+          authUrl.searchParams.append('client_id', clientId);
+          authUrl.searchParams.append('redirect_uri', redirectUri);
+          authUrl.searchParams.append('response_type', 'code');
+          authUrl.searchParams.append('scope', scope);
+          authUrl.searchParams.append('state', authState);
+          authUrl.searchParams.append('access_type', 'offline');
+          authUrl.searchParams.append('prompt', 'consent');
+          
+          // Open default browser
+          shell.openExternal(authUrl.toString());
+        }
+      };
     }
 
     function createTray() {
@@ -75,14 +146,15 @@ if (!gotTheLock) {
           responseHeaders: {
             ...details.responseHeaders,
             'Content-Security-Policy': [
-              "default-src 'self' https: app: 'unsafe-inline' 'unsafe-eval' data: blob: clipboard: mediastream: mediadevices:; " +
+              "default-src 'self' https: app: 'unsafe-inline' 'unsafe-eval' data: blob: clipboard: mediastream: mediadevices: *.cloudflare.com challenges.cloudflare.com; " +
               "media-src 'self' https: blob: mediastream: mediadevices: *; " +
-              "connect-src 'self' https: wss: blob: mediastream: mediadevices: clipboard:; " +
-              "script-src 'self' https: app: 'unsafe-inline' 'unsafe-eval' blob: clipboard:; " +
-              "worker-src 'self' blob: https:; " +
-              "frame-src 'self' https:; " +
-              "style-src 'self' 'unsafe-inline' https:; " +
-              "img-src 'self' data: https: blob:; " +
+              "connect-src 'self' https: wss: blob: mediastream: mediadevices: clipboard: *.cloudflare.com challenges.cloudflare.com; " +
+              "script-src 'self' https: app: 'unsafe-inline' 'unsafe-eval' blob: clipboard: *.cloudflare.com challenges.cloudflare.com; " +
+              "worker-src 'self' blob: https: *.cloudflare.com challenges.cloudflare.com; " +
+              "frame-src 'self' https: *.cloudflare.com challenges.cloudflare.com; " +
+              "style-src 'self' 'unsafe-inline' https: *.cloudflare.com challenges.cloudflare.com; " +
+              "img-src 'self' data: https: blob: *.cloudflare.com challenges.cloudflare.com; " +
+              "font-src 'self' data: https: *.cloudflare.com challenges.cloudflare.com; " +
               "clipboard-write 'self' https:; " +
               "clipboard-read 'self' https:;"
             ]
@@ -99,8 +171,6 @@ if (!gotTheLock) {
           nodeIntegration: false,
           contextIsolation: true,
           sandbox: false,
-          enableRemoteModule: true,
-          experimentalFeatures: true,
           webSecurity: true,
           allowRunningInsecureContent: false,
           webgl: true,
@@ -108,104 +178,50 @@ if (!gotTheLock) {
           clipboard: true,
           spellcheck: true,
           enableWebSQL: true,
-          enableBlinkFeatures: 'Clipboard,MediaStream,AudioCapture,VideoCapture',
+          v8CacheOptions: 'code',
+          enableBlinkFeatures: 'Clipboard,MediaStream,AudioCapture,VideoCapture,ChromeOAuth2,SecurePaymentConfirmation,PlatformCredentials,IdentityInBrowserContext',
           additionalArguments: [
-            '--enable-features=Clipboard,ClipboardBasic,ClipboardRead,ClipboardWrite',
+            '--enable-features=Clipboard,ClipboardBasic,ClipboardRead,ClipboardWrite,OAuth2,ChromeOAuth2,NetworkService,NetworkServiceInProcess,SecurePaymentConfirmation,ChromeExtensions,IdentityInBrowserContext,ThirdPartyStoragePartitioning',
             '--use-fake-ui-for-media-stream',
             '--enable-media-stream',
-            '--enable-usermedia-screen-capturing'
+            '--enable-usermedia-screen-capturing',
+            '--disable-web-security',
+            '--allow-running-insecure-content',
+            '--disable-site-isolation-trials',
+            '--disable-features=IsolateOrigins,site-per-process',
+            '--enable-blink-features=IdleDetection,ChromeOAuth2,IdentityInBrowserContext',
+            '--auto-accept-camera-and-microphone-capture',
+            '--enable-automation',
+            '--disable-blink-features=AutomationControlled',
+            '--enable-oauth2-api',
+            '--enable-google-signin'
           ],
           preload: path.join(__dirname, 'preload.js')
         }
       });
 
-      // Set custom user agent
-      const userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
-      mainWindow.webContents.setUserAgent(userAgent);
-
-      // Handle ALL permissions automatically
-      mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => {
-        console.log('Permission auto-approved:', permission);
-        callback(true); // Allow ALL permissions
+      // Set up minimal CSP - we don't need all the complex stuff anymore
+      session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
+        callback({
+          responseHeaders: {
+            ...details.responseHeaders,
+            'Content-Security-Policy': [
+              "default-src 'self' https: 'unsafe-inline' 'unsafe-eval' data: blob:;"
+            ]
+          }
+        });
       });
 
-      // Additional permission checks - always return true
-      mainWindow.webContents.session.setPermissionCheckHandler((webContents, permission) => {
-        return true; // Allow ALL permission checks
+      // Initialize auth handler
+      const googleAuth = initializeGoogleAuth();
+
+      // Handle auth request from renderer
+      ipcMain.handle('start-google-auth', () => {
+        googleAuth.startAuth();
       });
 
-      // Set media access preferences
-      if (process.platform === 'darwin') {
-        systemPreferences.setUserDefault('kTCCServiceMicrophone', 'boolean', true);
-        systemPreferences.setUserDefault('kTCCServiceCamera', 'boolean', true);
-      }
-
-      // Handle IPC for clipboard operations
-      ipcMain.handle('clipboard:copy', () => {
-        console.log('Main process: Handling clipboard:copy...');
-        try {
-          mainWindow.webContents.copy();
-          console.log('Copy operation completed');
-        } catch (error) {
-          console.error('Copy operation failed:', error);
-        }
-      });
-
-      ipcMain.handle('clipboard:paste', () => {
-        console.log('Main process: Handling clipboard:paste...');
-        try {
-          mainWindow.webContents.paste();
-          console.log('Paste operation completed');
-        } catch (error) {
-          console.error('Paste operation failed:', error);
-        }
-      });
-
-      // Register protocol for loading local files
-      protocol.handle('app', (request) => {
-        console.log('Protocol handler called for:', request.url);
-        const filePath = request.url.slice('app://'.length);
-        return net.fetch('file://' + path.join(__dirname, filePath));
-      });
-
-      // Inject scripts before loading the page
-      mainWindow.webContents.on('dom-ready', async () => {
-        console.log('DOM ready, injecting scripts...');
-        try {
-          const rendererContent = require('fs').readFileSync(path.join(__dirname, 'renderer.js'), 'utf8');
-          await mainWindow.webContents.executeJavaScript(rendererContent);
-          console.log('Renderer script injected directly');
-        } catch (error) {
-          console.error('FUCK! Failed to inject renderer script:', error);
-        }
-      });
-
-      // Load URL after script injection is set up
+      // Load the app
       mainWindow.loadURL('https://grok.com/');
-
-      // Additional debug points
-      mainWindow.webContents.on('did-start-loading', () => {
-        console.log('Page started loading...');
-      });
-
-      mainWindow.webContents.on('did-stop-loading', () => {
-        console.log('Page finished loading...');
-      });
-
-      // Monitor page errors and console messages
-      mainWindow.webContents.on('console-message', (event, level, message) => {
-        console.log('Renderer Console:', message);
-      });
-
-      // Save window state
-      mainWindow.on('close', (event) => {
-        if (!app.isQuitting) {
-          event.preventDefault();
-          mainWindow.hide();
-          return false;
-        }
-        store.set('windowBounds', mainWindow.getBounds());
-      });
     }
 
     // Handle second instance
@@ -220,7 +236,6 @@ if (!gotTheLock) {
 
     // Create window when Electron is ready
     app.whenReady().then(async () => {
-      await requestMediaAccess();
       createWindow();
       createTray();
 

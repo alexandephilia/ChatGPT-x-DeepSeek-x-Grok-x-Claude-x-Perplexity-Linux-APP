@@ -48,4 +48,15 @@ if (navigator.clipboard) {
   navigator.clipboard.writeText = handleClipboardWrite;
 }
 
+// Expose protected methods that allow the renderer process to use
+// the ipcRenderer without exposing the entire object
+contextBridge.exposeInMainWorld(
+  'api', {
+    startGoogleAuth: () => ipcRenderer.invoke('start-google-auth'),
+    onAuthSuccess: (callback) => {
+      ipcRenderer.on('auth-success', (event, data) => callback(data));
+    }
+  }
+);
+
 console.log('IPC bridge setup complete!'); 
