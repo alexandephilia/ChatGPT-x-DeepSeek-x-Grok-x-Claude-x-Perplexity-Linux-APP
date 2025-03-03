@@ -55,3 +55,6 @@ npm run build # Build the application
 ## Notes
 
 These applications are wrappers around web-based services and may be subject to the terms of service of their respective platforms. They are designed to enhance the user experience by providing native desktop integration features. 
+
+## TODOs
+- [ ] Make it a Flatpak package
