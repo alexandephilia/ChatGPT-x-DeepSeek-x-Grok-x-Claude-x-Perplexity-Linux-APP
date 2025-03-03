@@ -3,15 +3,15 @@
 
 This repository contains Electron-based desktop applications for various AI chat platforms. Each application is designed to provide a native desktop experience for web-based AI chat services. 
 
+> Forked by : Asaadzx ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧
+
 > Contributors: Alexandephilia x Sonnet 3.5 
 
-> Forked by : Asaadzx ദ്ദി(˵ •̀ ᴗ - ˵ ) ✧
 
 ## Repository Structure
 
 ```
 electron_app/
-├── ChatGPT_APP/       # Electron wrapper for ChatGPT
 └── Grok_APP/          # Electron wrapper for Grok
 ```
 
