@@ -1,0 +1,29 @@
+{
+  "name": "mistral_app",
+  "version": "1.0.0",
+  "description": "It is Mistral AI made with electron ",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.example.Mistral-app",
+    "linux": {
+      "target": "AppImage",
+      "icon": "assets/icon.svg",
+      "files": [
+        "icon.svg",
+        "main.js"
+      ]
+    }
+  }
+}
