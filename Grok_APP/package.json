@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Grok Desktop Application",
   "main": "main.js",
+  "homepage": "https://grok.x.ai/",
   "author": {
     "name": "Your Name",
     "email": "your.email@example.com"
@@ -12,7 +13,7 @@
     "start": "electron .",
     "build": "electron-builder",
     "build:linux": "electron-builder --linux",
-    "postinstall": "electron-builder install-app-dependencies"
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "electron-store": "^8.2.0"
