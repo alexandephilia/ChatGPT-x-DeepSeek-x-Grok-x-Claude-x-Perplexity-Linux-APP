@@ -185,7 +185,6 @@ npm run build # Build the application
 
 - ChatGPT_APP, Grok_APP, DeepSeek_APP and Perplexity_APP: Refer to their respective package.json files
   
-=======
 ## License
 
 - ChatGPT_APP, Grok_APP and DeepSeek_APP: Refer to their respective package.json files
