@@ -1,0 +1,12 @@
+directories:
+  output: dist
+  buildResources: build
+appId: com.deepseek.chat
+mac:
+  category: public.app-category.productivity
+linux:
+  category: Network
+win:
+  target: nsis
+files: []
+electronVersion: 34.2.0
