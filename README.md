@@ -108,7 +108,8 @@ An Electron-based desktop application for Grok.
 <<<<<<< HEAD
 ### Perplexity_APP
 
-![image](https://github.com/user-attachments/assets/placeholder-for-perplexity-screenshot)
+![image](https://github.com/user-attachments/assets/a3ae3815-c5d2-4d48-8294-61b02282fce4)
+
 
 An Electron-based desktop application for Perplexity AI.
 
@@ -128,7 +129,6 @@ An Electron-based desktop application for Perplexity AI.
 - Persistent session management
 - Cross-platform compatibility
 
-![image](https://github.com/user-attachments/assets/placeholder-for-perplexity-features)
 
 =======
 >>>>>>> 143d2dbba93d0adc569d13ec391e0a85e4ec5203
