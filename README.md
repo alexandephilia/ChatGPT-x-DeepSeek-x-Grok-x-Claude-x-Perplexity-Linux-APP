@@ -108,7 +108,6 @@ An Electron-based desktop application for Grok.
 - Media access for voice input
 - Single instance lock to prevent multiple instances
 
-<<<<<<< HEAD
 ### Perplexity_APP
 
 ![image](https://github.com/user-attachments/assets/a3ae3815-c5d2-4d48-8294-61b02282fce4)
@@ -173,7 +172,6 @@ npm start     # Run the application
 npm run build # Build the application
 ```
 
-<<<<<<< HEAD
 ### Perplexity_APP
 
 ```bash
@@ -190,7 +188,6 @@ npm run build # Build the application
 ## License
 
 - ChatGPT_APP, Grok_APP and DeepSeek_APP: Refer to their respective package.json files
->>>>>>> 143d2dbba93d0adc569d13ec391e0a85e4ec5203
 - Claude_APP: Dual-licensed under MIT and Apache License 2.0
 
 ## Notes
