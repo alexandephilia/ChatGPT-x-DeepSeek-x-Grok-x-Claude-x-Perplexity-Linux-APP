@@ -134,7 +134,6 @@ An Electron-based desktop application for Perplexity AI.
 
 
 =======
->>>>>>> 143d2dbba93d0adc569d13ec391e0a85e4ec5203
 ## Building and Running
 
 Each application can be built and run independently:
