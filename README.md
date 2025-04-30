@@ -1,5 +1,6 @@
 # AI Chat Desktop Applications
-![image](https://github.com/user-attachments/assets/29bc20ee-56bd-46f5-b5a3-43603723a7a7)
+![image](https://github.com/user-attachments/assets/a4703aae-b842-4303-a694-54eb330a5551)
+
 
 This repository contains Electron-based desktop applications for various AI chat platforms. Each application is designed to provide a native desktop experience for web-based AI chat services. 
 
@@ -12,10 +13,12 @@ electron_app/
 ├── ChatGPT_APP/       # Electron wrapper for ChatGPT
 ├── DeepSeek_APP/      # Electron wrapper for DeepSeek Chat
 ├── Claude_APP/        # Electron wrapper for Claude AI
-└── Grok_APP/          # Electron wrapper for Grok
+├── Grok_APP/          # Electron wrapper for Grok
+└── Perplexity_APP/    # Electron wrapper for Perplexity AI
 ```
 
 ## Applications
+
 
 ### ChatGPT_APP
 
