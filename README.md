@@ -59,7 +59,7 @@ An unofficial Electron wrapper for Claude AI desktop application.
 - `.gitignore` - Git ignore configuration
 
 **Features:**
-- MCP (Model Control Protocol) support
+- MCP (Model Context Protocol) support
 - System tray integration
 - Cross-platform compatibility with Linux focus
 
