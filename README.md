@@ -1,8 +1,10 @@
-# AI Chat Desktop Applications
+# AI Chat Linux Desktops Applications
 ![image](https://github.com/user-attachments/assets/d7944d51-4b52-4496-be44-341be000c865)
 
 
-This repository contains Electron-based desktop applications for various AI chat platforms. Each application is designed to provide a native desktop experience for web-based AI chat services. 
+This repository contains Electron-based desktop applications for various AI chat platforms as (.AppImage) build. Each application is designed to provide a native desktop experience for web-based AI chat services. 
+
+> Note: Google Auth might get blocked due to restriction imposed by Google. The workaround could be directly log in directly with your registered account.
 
 > Contributors: Alexandephilia x Sonnet 3.5
 
