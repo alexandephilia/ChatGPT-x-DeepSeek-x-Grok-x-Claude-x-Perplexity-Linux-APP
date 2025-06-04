@@ -2,7 +2,7 @@
 ![image](https://github.com/user-attachments/assets/d7944d51-4b52-4496-be44-341be000c865)
 
 
-This repository contains Electron-based desktop applications for various AI chat platforms as (.AppImage) build. Each application is designed to provide a native desktop experience for web-based AI chat services. 
+This repository contains Electron-based desktop applications for various AI chat platforms as (.AppImage) build. Each application is designed to provide a native desktop experience for web-based AI chat services.
 
 > Note: Google Auth might get blocked due to restriction imposed by Google. The workaround could be directly log in directly with your registered account.
 
@@ -185,13 +185,12 @@ npm run build # Build the application
 
 ## License
 
-- ChatGPT_APP, Grok_APP, DeepSeek_APP and Perplexity_APP: Refer to their respective package.json files
-  
-## License
-
-- ChatGPT_APP, Grok_APP and DeepSeek_APP: Refer to their respective package.json files
-- Claude_APP: Dual-licensed under MIT and Apache License 2.0
+- **ChatGPT_APP**: License not specified in `package.json`.
+- **Claude_APP**: Dual-licensed under MIT and Apache License 2.0.
+- **DeepSeek_APP**: License not specified in `package.json`.
+- **Grok_APP**: MIT License (specified in `package.json`).
+- **Perplexity_APP**: MIT License (specified in `package.json`).
 
 ## Notes
 
-These applications are wrappers around web-based services and may be subject to the terms of service of their respective platforms. They are designed to enhance the user experience by providing native desktop integration features. 
+These applications are wrappers around web-based services and may be subject to the terms of service of their respective platforms. They are designed to enhance the user experience by providing native desktop integration features.
