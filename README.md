@@ -134,7 +134,7 @@ An Electron-based desktop application for Perplexity AI.
 - Cross-platform compatibility
 
 
-=======
+---
 ## Building and Running
 
 Each application can be built and run independently:
