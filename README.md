@@ -6,7 +6,7 @@ This repository contains Electron-based desktop applications for various AI chat
 
 > Note: Google Auth might get blocked due to restriction imposed by Google. The workaround could be directly log in directly with your registered account.
 
-> Contributors: Alexandephilia x Sonnet 3.5
+> Contributors: Alexandephilia x Jules x Sonnet 3.5
 
 ## Repository Structure
 
